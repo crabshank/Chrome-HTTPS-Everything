@@ -1,11 +1,20 @@
 {
   "manifest_version": 2,
   "name": "HTTPS Everything",
-  "version": "2021.7",
+  "version": "2021.8",
   "background": {
     "persistent": true,
     "scripts": ["background.js"]
 },
+   "content_scripts": [
+    {
+	      "all_frames": true,
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": ["content.js"]
+    }
+  ],
        "permissions": ["webRequest","webRequestBlocking","<all_urls>"],  
   "browser_action": {
     "default_icon": "HTTPS.png",
