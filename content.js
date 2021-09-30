@@ -82,7 +82,7 @@ function restore_options()
 		{
 			//console.log(items);
 		
-		if(!!items.bList && typeof  items.bList!=='undefined'){
+		if(!!items.bList && typeof  items.bList!=='undefined' && items.bList.length>0){
 			blacklist=items.bList.split('\n').join('').split(',');
 		}
 
