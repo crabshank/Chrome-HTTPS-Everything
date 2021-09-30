@@ -94,10 +94,11 @@ function start() {
 							"bList": []
 						}, function() {});
 			}else{
-
-				blacklist = items.bList.split('\n').join('').split(',');
-				blacklist = removeEls("", blacklist);
-				blacklist = removeChar("\n", blacklist);
+				if(items.bList.length>0){
+						blacklist = items.bList.split('\n').join('').split(',');
+						blacklist = removeEls("", blacklist);
+						blacklist = removeChar("\n", blacklist);
+				}
 			}
 			
 	chrome.webRequest.onBeforeRequest.addListener(
