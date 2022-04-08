@@ -1,6 +1,43 @@
 var timer;
 var blacklist=[];
 
+function getTagNameShadow(docm, tgn){
+	var shrc=[];
+	var out=[];
+	
+		let allNodes=[...docm.querySelectorAll('*')];
+		let srCnt=0;
+		
+		while(srCnt<allNodes.length){ //1st round
+			if(!!allNodes[srCnt] && typeof allNodes[srCnt] !=='undefined' && allNodes[srCnt].tagName===tgn){
+				out.push(allNodes[srCnt]);
+			}
+			
+			if(!!allNodes[srCnt].shadowRoot && typeof allNodes[srCnt].shadowRoot !=='undefined'){
+				let c=allNodes[srCnt].shadowRoot.children;
+				shrc.push(...c);
+			}
+			srCnt++;
+		}
+		
+		srCnt=0;
+		let srCnt_l=shrc.length;
+		
+		while(srCnt<srCnt_l){ //2nd round
+			if(!!shrc[srCnt].shadowRoot && typeof shrc[srCnt].shadowRoot !=='undefined'){
+				let c=shrc[srCnt].shadowRoot.children;
+				shrc.push(...c);
+				srCnt_l+=c.length;
+			}
+			srCnt++;
+		}
+	
+	let srv=shrc.filter((c)=>{return c.tagName===tgn;});
+	out.push(...srv);
+	
+	return out;
+}
+
 function removeEls(d, array){
 	var newArray = [];
 	for (let i = 0; i < array.length; i++)
@@ -113,9 +150,7 @@ changeHTTPS();
 		}
 		else
 		{
-
 			save_options();
-			restore_options();
 		}
 	});
 	}
@@ -137,7 +172,7 @@ function save_options()
 }
 
 function changeHTTPS() {
-	let lks=[...document.getElementsByTagName('A')];
+	let lks=getTagNameShadow(document, 'A');
 			
 	for (let i=0; i<lks.length; i++){
 			if((blacklist.length==0 || !blacklistMatch(blacklist,lks[i].href)[0]) && lks[i].href.startsWith('http://')){
