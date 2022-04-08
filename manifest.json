@@ -1,26 +1,24 @@
 {
-  "manifest_version": 2,
-  "name": "HTTPS Everything",
-  "version": "2021.9",
-    "options_page":  "options.html",
-  "background": {
-    "persistent": true,
-    "scripts": ["background.js"]
-},
-   "content_scripts": [
-    {
-	      "all_frames": true,
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": ["content.js"]
-    }
-  ],
-       "permissions": ["webRequest","webRequestBlocking","<all_urls>","storage"],  
-  "browser_action": {
-    "default_icon": "HTTPS.png",
-	   "default_title": "Change all HTTP to HTTPS"
-  },	"icons": {
-        "128": "HTTPS.png"
-    }
+	"name": "Ignore X-Frame",
+	"version": "2021.10",
+	"manifest_version": 3,
+	"background": {
+		"service_worker": "background.js"
+	},
+	"declarative_net_request": {
+		"rule_resources": [
+			{
+				"id": "1",
+				"enabled": true,
+				"path": "rules.json"
+			}
+		]
+	},
+	"host_permissions": [
+		"<all_urls>"
+	],
+	"permissions": ["declarativeNetRequest","declarativeNetRequestFeedback"],
+	"icons": {
+		"128": "icon.png"
+	}
 }
