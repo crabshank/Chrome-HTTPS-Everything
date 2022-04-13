@@ -171,7 +171,7 @@ function changeHTTPS() {
 let lks=getTagNameShadow(document, 'A');
 	
 for (let i=0; i<lks.length; i++){
-	if( (blacklist.length==0 || !blacklistMatch(blacklist,lks[i].href)[0])  && (requestDetails.url.includes('http://') || requestDetails.url.includes('http%3A%2F%2F') )  ){
+	if( (blacklist.length==0 || !blacklistMatch(blacklist,lks[i].href)[0])  && (lks[i].href.includes('http://') || lks[i].href.includes('http%3A%2F%2F') )  ){
 		let itx=lks[i].innerText;
 		if((itx==lks[i].href) || (itx+'/'==lks[i].href)){
 				lks[i].href=(rem_encoded_http)?lks[i].href.split('http://').join('https://').split('http%3A%2F%2F').join('https%3A%2F%2F'):lks[i].href.replace('http://','https://');
