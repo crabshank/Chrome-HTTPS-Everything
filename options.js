@@ -1,9 +1,10 @@
- var svbt=document.getElementById('save');
+var enc_http_box=document.getElementById('enc_http');
 var blklst=document.getElementById('blacklist');
+var svbt=document.getElementById('save');
 
 blklst.oninput=function () {
-blklst.style.height = 'inherit';
-blklst.style.height = (blklst.scrollHeight+7)+"px";
+	blklst.style.height = 'inherit';
+	blklst.style.height = (blklst.scrollHeight+7)+"px";
 }
 
 function removeEls(d, array){
@@ -71,7 +72,8 @@ var saver =function(){
 			chrome.storage.sync.clear(function() {
 		chrome.storage.sync.set(
 		{
-			bList: blklst.value
+			bList: blklst.value,
+			rem_enc_HTTP: enc_http_box.checked
 		}, function()
 		{
 			let status = document.getElementById('stats');
@@ -99,8 +101,9 @@ function restore_options()
 		{
 			//console.log(items);
 			blklst.value= unDef(items.bList,"");
-blklst.style.height = 'inherit';
-blklst.style.height = (blklst.scrollHeight+7)+"px";
+			blklst.style.height = 'inherit';
+			blklst.style.height = (blklst.scrollHeight+7)+"px";
+			enc_http_box.checked = unDef(items.rem_enc_HTTP,false);
 			svbt.onclick = () => saver();
 		}
 		else
@@ -116,7 +119,8 @@ function save_options()
 		chrome.storage.sync.clear(function() {
 	chrome.storage.sync.set(
 	{
-		bList: ""
+		bList: "",
+		rem_enc_HTTP: false
 	}, function(){
 		restore_options();
 	});

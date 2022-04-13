@@ -1,5 +1,6 @@
 try {
-	var blacklist=[];
+var blacklist=[];
+var rem_encoded_http=false;
 	
 function removeEls(d, array){
 	var newArray = [];
@@ -78,10 +79,9 @@ function blacklistMatch(array, t) {
 }
 
 function redirect(requestDetails) {
-	if((blacklist.length==0 || !blacklistMatch(blacklist,requestDetails.url)[0]) && requestDetails.url.startsWith('http://')){
-  console.log("Redirecting to HTTPS: " + requestDetails.url);
+if( (blacklist.length==0 || !blacklistMatch(blacklist,requestDetails.url)[0]) && (requestDetails.url.includes('http://') || requestDetails.url.includes('http%3A%2F%2F') )  ){
   return {
-    redirectUrl: requestDetails.url.split('http://').join('https://')
+    redirectUrl: (rem_encoded_http)?requestDetails.url.split('http://').join('https://').split('http%3A%2F%2F').join('https%3A%2F%2F'):requestDetails.url.replace('http://','https://')
   };
 }
 }
@@ -91,7 +91,8 @@ function start() {
 		chrome.storage.sync.get(null, function(items) {
 			if (Object.keys(items).length == 0) {
 						chrome.storage.sync.set({
-							"bList": []
+							"bList": "",
+							"rem_enc_HTTP": false		
 						}, function() {});
 			}else{
 				if(items.bList.length>0){
@@ -99,6 +100,7 @@ function start() {
 						blacklist = removeEls("", blacklist);
 						blacklist = removeChar("\n", blacklist);
 				}
+				rem_encoded_http=items.rem_enc_HTTP;
 			}
 			
 	chrome.webRequest.onBeforeRequest.addListener(

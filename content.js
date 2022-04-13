@@ -1,5 +1,6 @@
 var timer;
 var blacklist=[];
+var rem_encoded_http=false;
 
 function getTagNameShadow(docm, tgn){
 var shrc=[docm];
@@ -111,6 +112,10 @@ function restore_options()
 		
 		if(!!items.bList && typeof  items.bList!=='undefined' && items.bList.length>0){
 			blacklist=items.bList.split('\n').join('').split(',');
+		}		
+		
+		if(!!items.rem_enc_HTTP && typeof  items.rem_enc_HTTP!=='undefined'){
+			rem_encoded_http=items.rem_enc_HTTP;
 		}
 
 if (typeof observer === "undefined" && typeof timer === "undefined") {
@@ -151,7 +156,8 @@ function save_options()
 		chrome.storage.sync.clear(function() {
 	chrome.storage.sync.set(
 	{
-		bList: ""
+		bList: "",
+		rem_enc_HTTP: false
 	}, function()
 	{
 		console.log('Default options saved.');
@@ -162,20 +168,19 @@ function save_options()
 }
 
 function changeHTTPS() {
-	let lks=getTagNameShadow(document, 'A');
-			
-	for (let i=0; i<lks.length; i++){
-			if((blacklist.length==0 || !blacklistMatch(blacklist,lks[i].href)[0]) && lks[i].href.startsWith('http://')){
-				let itx=lks[i].innerText;
-				if((itx==lks[i].href) || (itx+'/'==lks[i].href)){
-					lks[i].href=lks[i].href.split('http://').join('https://');
-					lks[i].innerText=itx.split('http://').join('https://')
-				}else{
-					lks[i].href=lks[i].href.split('http://').join('https://');
-				}
+let lks=getTagNameShadow(document, 'A');
+	
+for (let i=0; i<lks.length; i++){
+	if( (blacklist.length==0 || !blacklistMatch(blacklist,lks[i].href)[0])  && (requestDetails.url.includes('http://') || requestDetails.url.includes('http%3A%2F%2F') )  ){
+		let itx=lks[i].innerText;
+		if((itx==lks[i].href) || (itx+'/'==lks[i].href)){
+				lks[i].href=(rem_encoded_http)?lks[i].href.split('http://').join('https://').split('http%3A%2F%2F').join('https%3A%2F%2F'):lks[i].href.replace('http://','https://');
+				lks[i].innerText=(rem_encoded_http)?itx.split('http://').join('https://').split('http%3A%2F%2F').join('https%3A%2F%2F'):itx.replace('http://','https://');
+		}else{
+			lks[i].href=(rem_encoded_http)?lks[i].href.split('http://').join('https://').split('http%3A%2F%2F').join('https%3A%2F%2F'):lks[i].href.replace('http://','https://');
+		}
+}
 
-			}
-	}
 }
 
 restore_options();
