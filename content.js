@@ -1,6 +1,11 @@
 var timer;
 var blacklist=[];
 var rem_encoded_http=false;
+var last_a=false;
+
+function isValid_A(el){
+	return ( (el.tagName==='A' && el.href!==null && typeof el.href!=='undefined' && el.href!=='')? true : false );
+}
 
 function getTagNameShadow(docm, tgn){
 var shrc=[docm];
@@ -118,28 +123,43 @@ function restore_options()
 			rem_encoded_http=items.rem_enc_HTTP;
 		}
 
-if (typeof observer === "undefined" && typeof timer === "undefined") {
-
-changeHTTPS();
-
-    const observer = new MutationObserver((mutations) => {
-        if (timer) {
-            clearTimeout(timer);
-        }
-        timer = setTimeout(() => {
+if (typeof observer === "undefined") {
+	const observer = new MutationObserver((mutations) => {
+	
+		let fnd=false;
+			
+		for(let i=0, len=mutations.length; i<len;i++){
+			let t=mutations[i];
+			if(isValid_A(t.target)){
+				fnd=true;
+				last_a=true;
+				i=len-1;
+			}else{
+				let d=[...t.addedNodes];
+				let ix=d.findIndex((n)=>{return isValid_A(n); } ); if(ix>=0){
+					fnd=true;
+					last_a=true;
+					i=len-1;
+				}
+			}
+		}
+				
+		if(last_a){
 			changeHTTPS();
-        }, 1000);
-    });
+			last_a=(!fnd)?false:last_a;
+		}
+			
+	});
 
+		observer.observe(document, {
+			subtree: true,
+			childList: true,
+			attributes: true,
+			attributeOldValue: true,
+			characterData: true,
+			characterDataOldValue: true
+		});
 
-    observer.observe(document, {
-        attributes: true,
-        childList: true,
-        subtree: true,
-        characterData: true,
-        attributeOldValue: true,
-        characterDataOldValue: true
-    });
 }
 
 		}
