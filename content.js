@@ -1,12 +1,6 @@
 var timer=null;
 var blacklist=[];
 var rem_encoded_http=false;
-var last_a=false;
-var muts;
-
-function isValid_A(el){
-	return ( (el.tagName==='A' && el.href!==null && typeof el.href!=='undefined' && el.href!=='')? true : false );
-}
 
 function getTagNameShadow(docm, tgn){
 var shrc=[docm];
