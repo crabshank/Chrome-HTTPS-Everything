@@ -1,7 +1,8 @@
-var timer;
+var timer=null;
 var blacklist=[];
 var rem_encoded_http=false;
 var last_a=false;
+var muts;
 
 function isValid_A(el){
 	return ( (el.tagName==='A' && el.href!==null && typeof el.href!=='undefined' && el.href!=='')? true : false );
@@ -122,33 +123,15 @@ function restore_options()
 		if(!!items.rem_enc_HTTP && typeof  items.rem_enc_HTTP!=='undefined'){
 			rem_encoded_http=items.rem_enc_HTTP;
 		}
-
+		
 if (typeof observer === "undefined") {
 	const observer = new MutationObserver((mutations) => {
-	
-		let fnd=false;
-			
-		for(let i=0, len=mutations.length; i<len;i++){
-			let t=mutations[i];
-			if(isValid_A(t.target)){
-				fnd=true;
-				last_a=true;
-				i=len-1;
-			}else{
-				let d=[...t.addedNodes];
-				let ix=d.findIndex((n)=>{return isValid_A(n); } ); if(ix>=0){
-					fnd=true;
-					last_a=true;
-					i=len-1;
-				}
-			}
+		 if (timer) {
+					clearTimeout(timer);
 		}
-				
-		if(last_a){
+		timer = setTimeout(() => {
 			changeHTTPS();
-			last_a=(!fnd)?false:last_a;
-		}
-			
+		}, 1000);
 	});
 
 		observer.observe(document, {
