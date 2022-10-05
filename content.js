@@ -118,26 +118,44 @@ function restore_options()
 			rem_encoded_http=items.rem_enc_HTTP;
 		}
 		
-if (typeof observer === "undefined") {
-	const observer = new MutationObserver((mutations) => {
-		 if (timer) {
-					clearTimeout(timer);
-		}
-		timer = setTimeout(() => {
+		
+if(typeof observer ==="undefined" && typeof timer ==="undefined"){
+	var timer;
+	var timer_tm=null;
+const observer = new MutationObserver((mutations) =>
+{
+	if(timer){
+		clearTimeout(timer);
+		if(performance.now()-timer_tm>=6500){
 			changeHTTPS();
-		}, 1000);
-	});
+			timer_tm=performance.now();
+		}
+	}
+	
+	timer = setTimeout(() =>
+	{
+		changeHTTPS();
+		timer_tm=performance.now();
+	}, 1000);
+	
+	if(timer_tm ===null){
+		timer_tm=performance.now();
+	}
+});
 
-		observer.observe(document, {
-			subtree: true,
-			childList: true,
-			attributes: true,
-			attributeOldValue: true,
-			characterData: true,
-			characterDataOldValue: true
-		});
 
+observer.observe(document, {
+	subtree: true,
+	childList: true,
+	attributes: true,
+	attributeOldValue: true,
+	characterData: true,
+	characterDataOldValue: true
+});
+		
 }
+		
+
 
 		}
 		else
