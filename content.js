@@ -1,4 +1,3 @@
-var timer=null;
 var blacklist=[];
 var rem_encoded_http=false;
 
