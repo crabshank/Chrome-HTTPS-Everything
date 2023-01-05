@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "HTTPS Everything",
-  "version": "2022.10",
+  "version": "2023.1",
     "options_page":  "options.html",
   "background": {
     "persistent": true,
